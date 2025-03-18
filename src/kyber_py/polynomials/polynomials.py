@@ -1,3 +1,5 @@
+from typing import List
+
 from ..utilities.utils import bit_count
 from .polynomials_generic import PolynomialRing, Polynomial
 
@@ -87,7 +89,7 @@ class PolynomialRingKyber(PolynomialRing):
         # Ensure the value d is set correctly
         if 256 * d != len(input_bytes) * 8:
             raise ValueError(
-                f"input bytes must be a multiple of (polynomial degree) / 8, {256*d = }, {len(input_bytes)*8 = }"
+                f"input bytes must be a multiple of (polynomial degree) / 8, {256*d=}, {len(input_bytes)*8=}"
             )
 
         # Set the modulus
@@ -121,7 +123,7 @@ class PolynomialRingKyber(PolynomialRing):
 
 
 class PolynomialKyber(Polynomial):
-    def __init__(self, parent, coefficients):
+    def __init__(self, parent: PolynomialRingKyber, coefficients: List[int]):
         self.parent = parent
         self.coeffs = self._parse_coefficients(coefficients)
 
@@ -201,11 +203,11 @@ class PolynomialKyber(Polynomial):
         """
         Not supported, raises a ``TypeError``
         """
-        raise TypeError(f"Polynomial not in the NTT domain: {type(self) = }")
+        raise TypeError(f"Polynomial not in the NTT domain: {type(self)=}")
 
 
 class PolynomialKyberNTT(PolynomialKyber):
-    def __init__(self, parent, coefficients):
+    def __init__(self, parent: PolynomialRingKyber, coefficients: List[int]):
         self.parent = parent
         self.coeffs = self._parse_coefficients(coefficients)
 
@@ -214,7 +216,7 @@ class PolynomialKyberNTT(PolynomialKyber):
         Not supported, raises a ``TypeError``
         """
         raise TypeError(
-            f"Polynomial is already in the NTT domain: {type(self) = }"
+            f"Polynomial is already in the NTT domain: {type(self)=}"
         )
 
     def from_ntt(self):
@@ -303,6 +305,6 @@ class PolynomialKyberNTT(PolynomialKyber):
             new_coeffs = [(c * other) % 3329 for c in self.coeffs]
         else:
             raise NotImplementedError(
-                f"Polynomials can only be multiplied by each other, or scaled by integers, {type(other) = }, {type(self) = }"
+                f"Polynomials can only be multiplied by each other, or scaled by integers, {type(other)=}, {type(self)=}"
             )
         return self.parent(new_coeffs, is_ntt=True)

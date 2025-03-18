@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 
 class PolynomialRing:
@@ -8,7 +9,7 @@ class PolynomialRing:
         R = GF(q) / (X^n + 1)
     """
 
-    def __init__(self, q, n):
+    def __init__(self, q: int, n: int):
         self.q = q
         self.n = n
         self.element = Polynomial
@@ -27,7 +28,7 @@ class PolynomialRing:
         coefficients = [random.randint(0, self.q - 1) for _ in range(self.n)]
         return self(coefficients)
 
-    def __call__(self, coefficients):
+    def __call__(self, coefficients: List[int]):
         if isinstance(coefficients, int):
             return self.element(self, [coefficients])
         if not isinstance(coefficients, list):
@@ -41,7 +42,7 @@ class PolynomialRing:
 
 
 class Polynomial:
-    def __init__(self, parent, coefficients):
+    def __init__(self, parent: PolynomialRing, coefficients: List[int]):
         self.parent = parent
         self.coeffs = self._parse_coefficients(coefficients)
 
@@ -57,7 +58,7 @@ class Polynomial:
         """
         return all(c == 0 for c in self.coeffs[1:])
 
-    def _parse_coefficients(self, coefficients):
+    def _parse_coefficients(self, coefficients: List[int]):
         """
         Helper function which right pads with zeros
         to allow polynomial construction as
